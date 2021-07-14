@@ -87,7 +87,7 @@ export default function LivestreamComments(props: Props) {
     function handleScroll() {
       if (discussionElement) {
         const negativeCommentHeight = commentElement && -1 * commentElement.offsetHeight;
-        const isAtRecent = negativeCommentHeight && discussionElement.scrollTop >= negativeCommentHeight;
+        const isAtRecent = negativeCommentHeight && discussionElement.scrollTop >= (negativeCommentHeight * 2);
 
         setScrollBottom(isAtRecent);
       }
@@ -120,7 +120,8 @@ export default function LivestreamComments(props: Props) {
 
   function scrollBack() {
     const element = document.querySelector('.livestream__comments');
-    if (element) element.scrollTop = 0;
+    element.scrollTop = 0;
+    setScrollBottom(false);
   }
 
   return (
@@ -206,7 +207,7 @@ export default function LivestreamComments(props: Props) {
               button="alt"
               className="livestream__comments-scroll__down"
               label={__('Recent Comments')}
-              onClick={() => scrollBack()}
+              onClick={scrollBack}
             />
           )}
 
