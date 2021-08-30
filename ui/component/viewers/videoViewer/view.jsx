@@ -59,6 +59,7 @@ type Props = {
   doSetPlayingUri: (string) => void,
   collectionId: string,
   nextRecommendedUri: string,
+  videoTheaterMode: boolean,
 };
 
 /*
@@ -98,6 +99,7 @@ function VideoViewer(props: Props) {
     doSetPlayingUri,
     collectionId,
     nextRecommendedUri,
+    videoTheaterMode,
   } = props;
   const permanentUrl = claim && claim.permanent_url;
   const adApprovedChannelIds = homepageData ? getAllIds(homepageData) : [];
@@ -398,6 +400,7 @@ function VideoViewer(props: Props) {
           allowPreRoll={!embedded && !authenticated}
           shareTelemetry={shareTelemetry}
           replay={replay}
+          videoTheaterMode={videoTheaterMode}
         />
       )}
     </div>

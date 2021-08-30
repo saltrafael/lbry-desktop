@@ -60,6 +60,7 @@ type Props = {
   // allowPreRoll: ?boolean,
   shareTelemetry: boolean,
   replay: boolean,
+  videoTheaterMode: boolean,
 };
 
 // type VideoJSOptions = {
@@ -199,6 +200,7 @@ export default React.memo<Props>(function VideoJs(props: Props) {
     // allowPreRoll,
     shareTelemetry,
     replay,
+    videoTheaterMode,
   } = props;
 
   const [reload, setReload] = useState('initial');
@@ -325,13 +327,9 @@ export default React.memo<Props>(function VideoJs(props: Props) {
           resolveCtrlText({ type: 'pause' });
           resolveCtrlText({ type: 'volumechange' });
           resolveCtrlText({ type: 'fullscreenchange' });
-          // (1) The 'Theater mode' button should probably be changed to a class
-          // so that we can use getChild() with a specific name. There might be
-          // clashes if we add a new button in the future.
-          // (2) We'll have to get 'makeSelectClientSetting(SETTINGS.VIDEO_THEATER_MODE)'
-          // as a prop here so we can say "Theater mode|Default mode" instead of
-          // "Toggle Theater mode".
-          controlBar.getChild('Button').controlText(__('Toggle Theater mode (t)'));
+          controlBar
+            .getChild('TheaterModeButton')
+            .controlText(videoTheaterMode ? __('Default Mode (t)') : __('Theater Mode (t)'));
           break;
         default:
           if (isDev) throw Error('Unexpected: ' + e.type);
@@ -609,6 +607,16 @@ export default React.memo<Props>(function VideoJs(props: Props) {
       player.play();
     }
   }, [replay]);
+
+  useEffect(() => {
+    const player = playerRef.current;
+    if (player) {
+      const controlBar = player.getChild('controlBar');
+      controlBar
+        .getChild('TheaterModeButton')
+        .controlText(videoTheaterMode ? __('Default Mode (t)') : __('Theater Mode (t)'));
+    }
+  }, [videoTheaterMode]);
 
   // This lifecycle hook is only called once (on mount), or when `isAudio` changes.
   useEffect(() => {
