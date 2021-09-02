@@ -53,6 +53,7 @@ type Props = {
   isAudio: boolean,
   startMuted: boolean,
   autoplay: boolean,
+  autoplaySetting: boolean,
   toggleVideoTheaterMode: () => void,
   adUrl: ?string,
   claimId: ?string,
@@ -192,6 +193,7 @@ properties for this component should be kept to ONLY those that if changed shoul
 export default React.memo<Props>(function VideoJs(props: Props) {
   const {
     autoplay,
+    autoplaySetting,
     startMuted,
     source,
     sourceType,
@@ -629,6 +631,23 @@ export default React.memo<Props>(function VideoJs(props: Props) {
         .controlText(videoTheaterMode ? __('Default Mode (t)') : __('Theater Mode (t)'));
     }
   }, [videoTheaterMode]);
+
+  useEffect(() => {
+    const player = playerRef.current;
+    if (player) {
+      const touchOverlay = player.getChild('TouchOverlay');
+      const controlBar = player.getChild('controlBar') || touchOverlay.getChild('controlBar');
+      const autoplayButton = controlBar.getChild('AutoplayNextButton');
+
+      if (autoplayButton) {
+        const title = autoplaySetting ? 'Autoplay Next On' : 'Autoplay Next Off';
+
+        autoplayButton.controlText(title);
+        autoplayButton.setAttribute('aria-label', title);
+        autoplayButton.setAttribute('aria-checked', autoplaySetting);
+      }
+    }
+  }, [autoplaySetting]);
 
   // This lifecycle hook is only called once (on mount), or when `isAudio` changes.
   useEffect(() => {
